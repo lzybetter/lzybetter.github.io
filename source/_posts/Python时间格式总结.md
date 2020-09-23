@@ -5,14 +5,20 @@ tags:
 	- Python
 ---
 
-
+![Python时间类型及相互转换](https://raw.githubusercontent.com/lzybetter/myPic/master/20200920204524.png)
 
 ## time模块
 
 1. time模块下时间主要有三种表现形式：
 
-   1. 时间戳(timestamp)；
+   1. 时间戳(timestamp)，注意这里所说的时间戳本质上是个数字(int/float)，与Pandas中pandas._libs.tslibs.timestamps.Timestamp的timestamp是不一样的；
+
+      ![时间戳的类型](https://raw.githubusercontent.com/lzybetter/myPic/master/20200923141736.png)
+
+      ![Pandas timestamp类型](https://raw.githubusercontent.com/lzybetter/myPic/master/20200923141808.png)
+      
    2. 时间元组(struct_time);
+
    3. 格式化时间，格式化时间还包括自定义格式和固定格式；
 
 2. 以上表现形式生成和相互转换的方式：
