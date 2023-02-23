@@ -60,7 +60,7 @@ pagination_dir: page
 include: null
 exclude: null
 ignore: null
-theme: icarus
+theme: bear
 deploy:
   type: git
   repository: 'git@github.com:lzybetter/lzybetter.github.io.git'

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="description" content=""><meta name="keyword"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>我的天地</title><link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon"><link href="/styles/site.css" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><header class="container" id="header"><div class="header"><div class="header-left"><div class="avatar"><img src="/images/avatar.png"></div><div class="author"><div class="author-name"><a href="/">lzybetter</a></div><div class="about-me">一个沉迷于IT技术的机械工程师</div></div></div><div class="header-right"><ul class="navigation"><li><a href="/archives">归档</a></li></ul></div><div class="about-me-mask"><div class="about-me-wrap"><div class="about-me__header"><div class="avatar"><img src="/images/avatar.png"></div></div><ul class="socials"><li class="social-item"><span class="label"><img src="/images/socials/github.svg" alt="https://github.com/lzybetter"></span><a href="https://github.com/lzybetter" target="_blank" title="https://github.com/lzybetter">https://github.com/lzybetter</a></li></ul></div></div></div></header><div class="container home"><section class="article"><a class="title" href="/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">Spark与TDengine连接总结</a><div class="content excerpt"><p>TDengine是一款高性能的时序数据库，最近在研究如何在Spark中读取和写入数据，这里记录一下最近的成果。</p>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="description" content=""><meta name="keyword"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Spark与TDengine连接总结</title><link rel="shortcut icon" href="/images/avatar.png" type="image/x-icon"><link href="/styles/site.css" rel="stylesheet"><meta name="generator" content="Hexo 5.4.0"></head><body><header class="container" id="header"><div class="header"><div class="header-left"><div class="avatar"><img src="/images/avatar.png"></div><div class="author"><div class="author-name"><a href="/">lzybetter</a></div><div class="about-me">一个沉迷于IT技术的机械工程师</div></div></div><div class="header-right"><ul class="navigation"><li><a href="/archives">归档</a></li></ul></div><div class="about-me-mask"><div class="about-me-wrap"><div class="about-me__header"><div class="avatar"><img src="/images/avatar.png"></div></div><ul class="socials"><li class="social-item"><span class="label"><img src="/images/socials/github.svg" alt="https://github.com/lzybetter"></span><a href="https://github.com/lzybetter" target="_blank" title="https://github.com/lzybetter">https://github.com/lzybetter</a></li></ul></div></div></div></header><div class="container post"><section class="article"><div class="title">Spark与TDengine连接总结</div><div class="date">写于2023年02月23日</div><div class="content"><p>TDengine是一款高性能的时序数据库，最近在研究如何在Spark中读取和写入数据，这里记录一下最近的成果。</p>
 <blockquote>
 <p>版本信息：</p>
 <ol>
@@ -77,141 +77,7 @@
 <li><a target="_blank" rel="noopener" href="http://www.jsledd.cn/2019/04/05/datasourcev2/">Spark SQL DataSource V2 学习入门 + 代码模板</a></li>
 <li><a target="_blank" rel="noopener" href="https://docs.taosdata.com/2.6/reference/connector/java/">Tdengine v2.6 官方文档</a></li>
 </ol>
-</div><div class="tags"><a class="tag-link" href="/tags/Spark/" rel="tag">Spark</a><a class="tag-link" href="/tags/TDengine/" rel="tag">TDengine</a></div><div class="article-footer"><a class="excerpt-link" href="/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">全文...</a><div class="article-footer__right"><span class="date">写于2023年02月23日</span></div></div></section><section class="article"><a class="title" href="/2020/09/20/Python%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/">Python时间格式总结</a><div class="content excerpt"><p><img src="https://raw.githubusercontent.com/lzybetter/myPic/master/20200920204524.png" alt="Python时间类型及相互转换"></p>
-<h2 id="time模块"><a href="#time模块" class="headerlink" title="time模块"></a>time模块</h2><ol>
-<li><p>time模块下时间主要有三种表现形式：</p>
-<ol>
-<li><p>时间戳(timestamp)，注意这里所说的时间戳本质上是个数字(int/float)，与Pandas中pandas._libs.tslibs.timestamps.Timestamp的timestamp是不一样的；</p>
-<p><img src="https://raw.githubusercontent.com/lzybetter/myPic/master/20200923141736.png" alt="时间戳的类型"></p>
-<p><img src="https://raw.githubusercontent.com/lzybetter/myPic/master/20200923141808.png" alt="Pandas timestamp类型"></p>
-</li>
-<li><p>时间元组(struct_time);</p>
-</li>
-<li><p>格式化时间，格式化时间还包括自定义格式和固定格式；</p>
-</li>
-</ol>
-</li>
-<li><p>以上表现形式生成和相互转换的方式：</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>时间戳(ts)</th>
-<th>时间元组(st)</th>
-<th>自定义格式(ft)</th>
-<th>固定格式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>时间戳</td>
-<td>time.time()</td>
-<td>time.localtime(ts)<br>time.gmtime(ts)</td>
-<td>NA</td>
-<td>time.ctime(ts)</td>
-</tr>
-<tr>
-<td>时间元组</td>
-<td>time.mktime(st)</td>
-<td>time.localtime()<br>time.gmtime()</td>
-<td>time.strptime(fmt, st)</td>
-<td>time.asctime(st)</td>
-</tr>
-<tr>
-<td>自定义格式</td>
-<td>NA</td>
-<td>NA</td>
-<td>time.strftime(fmt)</td>
-<td>NA</td>
-</tr>
-<tr>
-<td>固定格式</td>
-<td>NA</td>
-<td>NA</td>
-<td>NA</td>
-<td>NA</td>
-</tr>
-</tbody></table>
-</li>
-</ol>
-<h2 id="datetime-date类"><a href="#datetime-date类" class="headerlink" title="datetime.date类"></a>datetime.date类</h2><ol>
-<li>date类，表示日期的类：<ol>
-<li>创建方法：datetime.date(year, month, day)</li>
-<li>主要属性：year，month，day</li>
-<li>主要方法：<ol>
-<li>date.timetuple(date) —— 返回日期的时间元组；</li>
-<li>date.replace(year, month, day) —— 替换date对象中的year/month/day，并返回替换后的date对象；</li>
-<li>date.weekday(date) —— 返回日期对应的星期，星期一返回0，星期二返回1，以此类推；</li>
-<li>date.isoweekday(date) —— 返回日期对应的星期，星期一返回1，星期二返回2，以此类推；</li>
-<li>date.iscalendar(date) —— 返回日期对应的元组 ；</li>
-<li>date.isoformat(date) —— 返回日期对应格式的字符串；</li>
-<li>date.fromtimestamp(timestamp) —— 根据给定的时间戳返回一个date对象；</li>
-<li>date.today() —— 返回当地日期的date对象，注意这里返回的不是timestamp对象；</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<h2 id="datetime-time类"><a href="#datetime-time类" class="headerlink" title="datetime.time类"></a>datetime.time类</h2><ol>
-<li>time类，表示时间的类：<ol>
-<li>创建方法：datetime.time(hour, minute, second, microsecond, tzinfo)</li>
-<li>主要属性：hour, minute, second, microsecond, tzinfo</li>
-<li>主要方法：<ol>
-<li>time.replace(hour, minute, second, microsecond, tzinfo) —— 替换time对象中的时分秒微秒和时区，并返回替换后的time对象；</li>
-<li>time.isofomr(time)，根据time对象返回 hour:minute:second格式的时间；</li>
-<li>time.strftime(fmt)，根据指定的格式，返回time对象的自定义格式化时间的字符串；</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-<h2 id="datetime-datetime类"><a href="#datetime-datetime类" class="headerlink" title="datetime.datetime类"></a>datetime.datetime类</h2><ol>
-<li>datetime类，饱含date和time的所有信息。</li>
-<li>主要属性：year、month、day、hour、minute、second、microsecond、tzinfo；</li>
-<li>主要方法：<ol>
-<li>datetime.date()/time()，获取date/time对象；</li>
-<li>datetime.today()，获取表示当前本地时间的datetime对象；</li>
-<li>datetime.now(tz)，获取表示当前本地时间的datetime对象，如果提供时区参数tz，则获取指定时区的datetime对象；</li>
-<li>datetime.utcnow()，获取表示当前utc时间的datetime对象；</li>
-<li>datetime.fromtimestamp(timestamp, tz)，根据时间戳创建一个datetime对象，如果指定了tz参数，则返回指定时区的对象；</li>
-<li>datetime.utcfromtimestamp(timestamp)，根据时间戳创建一个datetime对象；</li>
-<li>datetime.combine(date, time)，根据date和time对象创建一个datetime对象；</li>
-<li>datetime.strptime(date_string, format)，将格式字符串转换为datetime对象；</li>
-<li>datetime.replace(year, month, day, hour, minute, second, microsecond, tzinfo)，替代datetime中的年月日时分秒微秒和时区，并返回替换后的datetime对象；</li>
-<li>datetime.timetuple(datetime)，根据datetime对象，返回对应的时间元组；</li>
-<li>datetime.utctimetuple(datetime)，根据datetime对象，返回对应的utc时间的时间元组；</li>
-<li>datetime.weekday(datetime)，返回datetime对象所对应的星期，星期一对应于0，星期二对应1，以此类推；</li>
-<li>datetime.isoweekday(datetime)，返回datetime对象所对应的星期，星期一对应于1，星期二对应2，以此类推；</li>
-<li>datetime.isocalendar (datetime)，返回datetime对象说对应的iso日历；</li>
-<li>datetime.isoformat(datetime)，返回datetime对象所对应的iso格式的时间；</li>
-<li>datetime.ctime()，返回datetime对象所对应的c格式时间的字符串；</li>
-<li>datetime.strftime(format)，返回datetime对象所对应的指定格式时间的字符串；</li>
-</ol>
-</li>
-</ol>
-<h3 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a>参考文献：</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tkqasn/p/6001134.html">https://www.cnblogs.com/tkqasn/p/6001134.html</a></p>
-<p><a target="_blank" rel="noopener" href="https://my.oschina.net/whp/blog/130710">https://my.oschina.net/whp/blog/130710</a></p>
-</div><div class="tags"><a class="tag-link" href="/tags/Python/" rel="tag">Python</a></div><div class="article-footer"><a class="excerpt-link" href="/2020/09/20/Python%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/">全文...</a><div class="article-footer__right"><span class="date">写于2020年09月20日</span></div></div></section><section class="article"><a class="title" href="/2020/09/20/pandas-dataframe%E5%88%87%E7%89%87%E6%80%BB%E7%BB%93/">pandas.dataframe切片总结</a><div class="content excerpt"><ol>
-<li>df[‘column_name’] ，df[row_start_index, row_end_index]<ol>
-<li>可以通过df[[‘column_name1’, ‘column_name2’]]的方式来指定想选择的单个或多个列；</li>
-<li>可以通过df[df.index == ‘index’]来选择指定的单个行；</li>
-<li>可以通过行的序号来指定想选择的单个或多个行；</li>
-<li>不能通过df[‘index’]的方式来选择指定的行；</li>
-<li>不能通过列的序号来指定想选择的列；</li>
-</ol>
-</li>
-<li>loc函数<ol>
-<li>可以通过df.loc[[‘index_name1’,’index_name2’], [‘column_name1’, ‘column_name2’]]来指定想选择的单个或多个行和列;</li>
-<li>可以通过行的序号来指定想选择的单个或多个行；</li>
-<li>可以通过df.loc[df.index == ‘index’]来选择指定的单个行；</li>
-</ol>
-</li>
-<li>iloc函数<ol>
-<li>可以通过df.iloc[df.index == ‘index’]来选择指定的单个行；</li>
-<li>可以通过行列的序号来指定想要选择的行和列；</li>
-</ol>
-</li>
-</ol>
-</div><div class="tags"><a class="tag-link" href="/tags/Pandas/" rel="tag">Pandas</a><a class="tag-link" href="/tags/Python/" rel="tag">Python</a></div><div class="article-footer"><a class="excerpt-link" href="/2020/09/20/pandas-dataframe%E5%88%87%E7%89%87%E6%80%BB%E7%BB%93/">全文...</a><div class="article-footer__right"><span class="date">写于2020年09月20日</span></div></div></section></div><div id="backToTop"><div class="back-arrow back-arrow-left"></div><div class="back-arrow back-arrow-right"></div></div><footer class="container"><div class="rights"><span>Powered by </span><a href="http://hexo.io" target="_blank">Hexo</a><span>, Theme </span><a href="https://github.com/gary-Shen/hexo-theme-bear" target="_blank">Bear</a><span>.</span></div></footer>
+</div><div class="tags"><a class="tag-link" href="/tags/Spark/" rel="tag">Spark</a><a class="tag-link" href="/tags/TDengine/" rel="tag">TDengine</a></div></section></div><div class="container"><ul class="nav"><li>下一篇：<a href="/2020/09/20/Python%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/">Python时间格式总结</a></li></ul></div><div id="backToTop"><div class="back-arrow back-arrow-left"></div><div class="back-arrow back-arrow-right"></div></div><footer class="container"><div class="rights"><span>Powered by </span><a href="http://hexo.io" target="_blank">Hexo</a><span>, Theme </span><a href="https://github.com/gary-Shen/hexo-theme-bear" target="_blank">Bear</a><span>.</span></div></footer>
 <script src="/script/jquery.min.js"></script>
 
 <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
@@ -221,4 +87,6 @@
 <script src="/script/index.js"></script>
 <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 ga('create', 'UA-61220413-1', 'auto');
-ga('send', 'pageview');</script></body></html>
+ga('send', 'pageview');</script>
+<script src="/script/post.js"></script>
+</body></html>
