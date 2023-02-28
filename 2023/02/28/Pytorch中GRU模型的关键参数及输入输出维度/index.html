@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="lzybetter"><title>Pytorch中GRU模型的关键参数及输入输出维度 · 我的田地</title><meta name="description" content="一、GRU模型的关键参数
+
+input_size：输入的特征数，代表输入序列数据中每个值由多少个特征表示，比如NLP中，每个单次由几维的词向量表示；
+hidden_size：隐藏层特征数；
+num_layers：代表GRU的层数；
+bias：是否带有偏置， False则没有偏置，即\(b_"><meta name="keywords" content="Blog,博客,Hexo"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.webp"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="/css/insight.css"><link rel="stylesheet" href="/css/search.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><script src="/js/jquery.js"></script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="page-top animated fadeInDown"><div class="nav"><li> <a href="/">Home</a></li><li> <a href="/archives">Archives</a></li><li> <a href="/tags">Tags</a></li><li> <a href="/about">About</a></li></div><div class="information"><div class="nav_right_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="/images/avatar.png"></div></div></div><div class="sidebar animated fadeInDown"><div class="sidebar-top"><div class="logo-title"><div class="title"><img src="/images/logo.png" style="width:220px;" alt="favicon"><h3 title=""><a href="/">我的田地</a></h3><div class="description"><p>我的田地</p></div></div><ul class="social-links"><li><a target="_blank" rel="noopener" href="https://github.com/lzybetter"><i class="fa fa-github"></i></a></li></ul></div></div><div class="footer"><div class="p"> <span> 全站CC-BY-SA-3.0 </span><i class="fa fa-star"></i><span> lzybetter</span></div><div class="by_farbox"><span>Powered by </span><a href="https://hexo.io/zh-cn/" target="_blank">Hexo </a><span> & </span><span>Anatolo </span></div><div class="beian"></div></div></div><div class="main"><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>Pytorch中GRU模型的关键参数及输入输出维度</a></h3></div><div class="post-content"><p><h2 id="一gru模型的关键参数">一、GRU模型的关键参数</h2>
+<ol type="1">
+<li><p>input_size：输入的特征数，代表输入序列数据中每个值由多少个特征表示，比如NLP中，每个单次由几维的词向量表示；</p></li>
+<li><p>hidden_size：隐藏层特征数；</p></li>
+<li><p>num_layers：代表GRU的层数；</p></li>
+<li><p>bias：是否带有偏置， False则没有偏置，即<span class="math inline">\(b_{ih}=0, b_{hh}=0\)</span>. 默认为True</p></li>
+<li><p>batch_first：输入序列中，第一个维度是否为batch. 默认为False;</p></li>
+<li><p>dropout：除最后一层，每一层的输出都进行dropout，默认为: 0</p></li>
+<li><p>bidirectional：是否为双向GRU，默认为False；</p></li>
+</ol>
+<h2 id="二gru模型的输入和输出及维度">二、GRU模型的输入和输出及维度</h2>
+<h3 id="输入">2.1 输入</h3>
+<ol type="1">
+<li>GRU模型的输入为input和<span class="math inline">\(h_0\)</span>，其中input是输入的序列数据，<span class="math inline">\(h_0\)</span>是第一个GRU cell的隐藏层在每个batch中的初始值，<span class="math inline">\(h_0\)</span>可以不提供，系统会默认生成一个符合维度要求的全零tensor。</li>
+<li>输入维度：
+<ol type="1">
+<li>input，当参数batch_first为False时，input的维度为(seq_size, batch_size, feature_size)，当batch_first为True时，input的维度为(batch_size, seq_size, feature_size)；</li>
+<li><span class="math inline">\(h_0\)</span>的维度为(num_layers×GRU方向数，batch_size，hidden_size)；</li>
+</ol></li>
+</ol>
+<h3 id="输出">2.2 输出</h3>
+<ol type="1">
+<li>GRU模型的输出为output和<span class="math inline">\(h_n\)</span>，其中output为模型输出值，<span class="math inline">\(h_n\)</span>为模型最后一个GRU cell的隐藏层状态；</li>
+<li>输出维度：
+<ol type="1">
+<li>output的维度为(seq_size，batch_size，num_layers×GRU方向数)</li>
+<li><span class="math inline">\(h_n\)</span>的维度为(num_layers×GRU方向数，batch_size，hidden_size)</li>
+</ol></li>
+</ol>
+<blockquote>
+<ol type="1">
+<li>GRU方向数：当bidirectional为True时，GRU方向数为2，当bidirectional为False时，GRU方向数为1；</li>
+<li>seq_size为输入的单个序列长度，对于NLP代表了每个句子的长度；</li>
+</ol>
+</blockquote>
+<h2 id="三对应关系">三、对应关系</h2>
+<ol type="1">
+<li><p>GRU设置参数中input_size与输入序列input的最后一个维度即feature_size对应；</p></li>
+<li><p>GRU设置参数中hidden_size与输入<span class="math inline">\(h_0\)</span>、输出output和<span class="math inline">\(h_n\)</span>的最后一个维度对应；</p></li>
+<li><p>GRU设置参数中num_layers与输入<span class="math inline">\(h_0\)</span>、输出<span class="math inline">\(h_n\)</span>的第一个维度中num_layers对应；</p></li>
+<li><p>GRU设置参数中bidirectional与输入<span class="math inline">\(h_0\)</span>、输出output和<span class="math inline">\(h_n\)</span>的第一个维度中GRU方向数对应；</p></li>
+<li><p>GRU输入和输出中seq_size、batch_size不变，但是最后一个维度由输入的feature_size变为输出的hidden_size；</p></li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_11299290/4727876">循环神经网络 - torch.nn.GRU（）参数详解</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sophicchen/article/details/108005115">RNN, LSTM, GRU中输入输出维度</a></p>
+</p><div class="tip">本文采用CC-BY-SA-3.0协议，转载请注明出处<br>Author: lzybetter</div></div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2023-02-28</span><i class="fa fa-tag"></i><a class="tag" href="/tags/Pytorch/" title="Pytorch">Pytorch </a><span class="leancloud_visitors"></span><span>About 638 words, 2 min 7 sec  read</span></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="" onclick="javascript:join_favorite()" ref="sidebar"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://blog.lzyutopia.tk/2023/02/28/Pytorch中GRU模型的关键参数及输入输出维度/,我的田地,Pytorch中GRU模型的关键参数及输入输出维度,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="next pagbuttons"><a class="btn" role="navigation" href="/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/" title="Spark与TDengine连接总结">Next</a></li></ul></div><script src="/js/visitors.js"></script></div></div></div></div><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script><script src="/js/add-bookmark.js"></script></body></html>

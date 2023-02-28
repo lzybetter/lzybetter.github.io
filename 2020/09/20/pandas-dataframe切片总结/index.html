@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="lzybetter"><title>pandas.dataframe切片总结 · 我的田地</title><meta name="description" content="df[‘column_name’] ，df[row_start_index, row_end_index]
+
+可以通过df[[‘column_name1’, ‘column_name2’]]的方式来指定想选择的单个或多个列；
+可以通过df[df.index == ‘index’]来选择指定的单"><meta name="keywords" content="Blog,博客,Hexo"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.webp"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="/css/insight.css"><link rel="stylesheet" href="/css/search.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"><script src="/js/jquery.js"></script><meta name="generator" content="Hexo 5.4.0"></head><body><div class="page-top animated fadeInDown"><div class="nav"><li> <a href="/">Home</a></li><li> <a href="/archives">Archives</a></li><li> <a href="/tags">Tags</a></li><li> <a href="/about">About</a></li></div><div class="information"><div class="nav_right_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="/images/avatar.png"></div></div></div><div class="sidebar animated fadeInDown"><div class="sidebar-top"><div class="logo-title"><div class="title"><img src="/images/logo.png" style="width:220px;" alt="favicon"><h3 title=""><a href="/">我的田地</a></h3><div class="description"><p>我的田地</p></div></div><ul class="social-links"><li><a target="_blank" rel="noopener" href="https://github.com/lzybetter"><i class="fa fa-github"></i></a></li></ul></div></div><div class="footer"><div class="p"> <span> 全站CC-BY-SA-3.0 </span><i class="fa fa-star"></i><span> lzybetter</span></div><div class="by_farbox"><span>Powered by </span><a href="https://hexo.io/zh-cn/" target="_blank">Hexo </a><span> & </span><span>Anatolo </span></div><div class="beian"></div></div></div><div class="main"><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>pandas.dataframe切片总结</a></h3></div><div class="post-content"><p><ol type="1">
+<li>df[‘column_name’] ，df[row_start_index, row_end_index]
+<ol type="1">
+<li>可以通过df[[‘column_name1’, ‘column_name2’]]的方式来指定想选择的单个或多个列；</li>
+<li>可以通过df[df.index == ‘index’]来选择指定的单个行；</li>
+<li>可以通过行的序号来指定想选择的单个或多个行；</li>
+<li>不能通过df[‘index’]的方式来选择指定的行；</li>
+<li>不能通过列的序号来指定想选择的列；</li>
+</ol></li>
+<li>loc函数
+<ol type="1">
+<li>可以通过df.loc[[‘index_name1’,’index_name2’], [‘column_name1’, ‘column_name2’]]来指定想选择的单个或多个行和列;</li>
+<li>可以通过行的序号来指定想选择的单个或多个行；</li>
+<li>可以通过df.loc[df.index == ‘index’]来选择指定的单个行；</li>
+</ol></li>
+<li>iloc函数
+<ol type="1">
+<li>可以通过df.iloc[df.index == ‘index’]来选择指定的单个行；</li>
+<li>可以通过行列的序号来指定想要选择的行和列；</li>
+</ol></li>
+</ol>
+</p><div class="tip">本文采用CC-BY-SA-3.0协议，转载请注明出处<br>Author: lzybetter</div></div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2020-09-20</span><i class="fa fa-tag"></i><a class="tag" href="/tags/Python/" title="Python">Python </a><i class="fa fa-tag"></i><a class="tag" href="/tags/Pandas/" title="Pandas">Pandas </a><span class="leancloud_visitors"></span><span>About 249 words, 49 sec  read</span></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="" onclick="javascript:join_favorite()" ref="sidebar"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" target="_blank" rel="noopener" href="http://twitter.com/home?status=,https://blog.lzyutopia.tk/2020/09/20/pandas-dataframe切片总结/,我的田地,pandas.dataframe切片总结,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a class="btn" role="navigation" href="/2020/09/20/Python%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/" title="Python时间格式总结">Previous</a></li></ul></div><script src="/js/visitors.js"></script></div></div></div></div><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script><script src="/js/add-bookmark.js"></script></body></html>
