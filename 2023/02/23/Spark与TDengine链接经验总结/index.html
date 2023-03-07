@@ -27,7 +27,7 @@
 <meta property="og:description" content="TDengine是一款高性能的时序数据库，最近在研究如何在Spark中读取和写入数据，这里记录一下最近的成果。  版本信息：  Spark版本：2.4.0，yarn集群模式 Python版本：3.7.9 Scala版本：2.11.12 TDengine版本：2.6，商业版 TAOS-JDBC版本：2.0.42   1. 官方JDBC使用 TDengine官方提供了JDBC，">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-02-23T09:14:57.000Z">
-<meta property="article:modified_time" content="2023-02-23T09:14:17.348Z">
+<meta property="article:modified_time" content="2023-03-07T06:17:11.618Z">
 <meta property="article:author" content="lzybetter">
 <meta property="article:tag" content="Spark">
 <meta property="article:tag" content="TDengine">
@@ -179,9 +179,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2023-02-23 17:14:57 / Modified: 17:14:17" itemprop="dateCreated datePublished" datetime="2023-02-23T17:14:57+08:00">2023-02-23</time>
+      <time title="Created: 2023-02-23 17:14:57" itemprop="dateCreated datePublished" datetime="2023-02-23T17:14:57+08:00">2023-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-03-07 14:17:11" itemprop="dateModified" datetime="2023-03-07T14:17:11+08:00">2023-03-07</time>
     </span>
 
   
@@ -212,6 +218,7 @@
 <li>需要引用taos-jdbcdriver，版本上强烈推荐2.0.42，其他版本会有各种问题(针对2.x系列，3.x系列的没用过)；</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;  </span><br><span class="line">  &lt;groupId&gt;com.taosdata.jdbc&lt;/groupId&gt;  </span><br><span class="line">  &lt;artifactId&gt;taos-jdbcdriver&lt;/artifactId&gt;  </span><br><span class="line">  &lt;version&gt;2.0.42&lt;/version&gt;  </span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
 <ol start="2" type="1">
 <li>taos-jdbcdriver的依赖与spark集群可能存在冲突(版本不同)，需要手动指定依赖，方法为：
 <ol type="1">
