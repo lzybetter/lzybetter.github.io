@@ -30,7 +30,7 @@ tags:
    | 自定义格式 | NA              | NA                                    | time.strftime(fmt)     | NA               |
    | 固定格式   | NA              | NA                                    | NA                     | NA               |
 
-   
+   <!-- more -->
 
 ## datetime.date类
 

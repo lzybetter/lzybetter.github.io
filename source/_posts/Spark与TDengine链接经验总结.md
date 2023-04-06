@@ -34,6 +34,8 @@ TDengine官方提供了JDBC，Spark读取和写入均可以直接使用
 </dependency>
 ```
 
+<!-- more -->
+
 2. taos-jdbcdriver的依赖与spark集群可能存在冲突(版本不同)，需要手动指定依赖，方法为：
    1. 下载正确的依赖，我用的是guava-30.1.1-jre.jar和failureaccess-1.0.1.jar 
    2. 将jar上传hadoop；
