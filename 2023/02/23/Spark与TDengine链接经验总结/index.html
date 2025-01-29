@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.lzyutopia.tk","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TDengine是一款高性能的时序数据库，最近在研究如何在Spark中读取和写入数据，这里记录一下最近的成果。  版本信息：  Spark版本：2.4.0，yarn集群模式 Python版本：3.7.9 Scala版本：2.11.12 TDengine版本：2.6，商业版 TAOS-JDBC版本：2.0.42   1. 官方JDBC使用TDengine官方提供了JDBC，Spark读取和写入均可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark与TDengine连接总结">
+<meta property="og:url" content="https://blog.lzyutopia.tk/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="我的田地">
+<meta property="og:description" content="TDengine是一款高性能的时序数据库，最近在研究如何在Spark中读取和写入数据，这里记录一下最近的成果。  版本信息：  Spark版本：2.4.0，yarn集群模式 Python版本：3.7.9 Scala版本：2.11.12 TDengine版本：2.6，商业版 TAOS-JDBC版本：2.0.42   1. 官方JDBC使用TDengine官方提供了JDBC，Spark读取和写入均可以">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-02-23T09:14:57.000Z">
+<meta property="article:modified_time" content="2023-08-20T14:52:59.164Z">
+<meta property="article:author" content="lzybetter">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="TDengine">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.lzyutopia.tk/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://blog.lzyutopia.tk/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/","path":"2023/02/23/Spark与TDengine链接经验总结/","title":"Spark与TDengine连接总结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spark与TDengine连接总结 | 我的田地</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">我的田地</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%98%E6%96%B9JDBC%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">1. 官方JDBC使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 依赖问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E8%AF%BB%E5%8F%96"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 读取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E5%AD%98%E5%82%A8"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%BA%90%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">2. 使用自定义数据源写入数据</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">lzybetter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://blog.lzyutopia.tk/2023/02/23/Spark%E4%B8%8ETDengine%E9%93%BE%E6%8E%A5%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="lzybetter">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="我的田地">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spark与TDengine连接总结 | 我的田地">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spark与TDengine连接总结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-23 17:14:57" itemprop="dateCreated datePublished" datetime="2023-02-23T17:14:57+08:00">2023-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-08-20 22:52:59" itemprop="dateModified" datetime="2023-08-20T22:52:59+08:00">2023-08-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>TDengine是一款高性能的时序数据库，最近在研究如何在Spark中读取和写入数据，这里记录一下最近的成果。</p>
+<blockquote>
+<p>版本信息：</p>
+<ol>
+<li>Spark版本：2.4.0，yarn集群模式</li>
+<li>Python版本：3.7.9</li>
+<li>Scala版本：2.11.12</li>
+<li>TDengine版本：2.6，商业版</li>
+<li>TAOS-JDBC版本：2.0.42</li>
+</ol>
+</blockquote>
+<h2 id="1-官方JDBC使用"><a href="#1-官方JDBC使用" class="headerlink" title="1. 官方JDBC使用"></a>1. 官方JDBC使用</h2><p>TDengine官方提供了JDBC，Spark读取和写入均可以直接使用</p>
+<h3 id="1-1-依赖问题"><a href="#1-1-依赖问题" class="headerlink" title="1.1 依赖问题"></a>1.1 依赖问题</h3><ol>
+<li>需要引用taos-jdbcdriver，版本上强烈推荐2.0.42，其他版本会有各种问题(针对2.x系列，3.x系列的没用过)；</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;  </span><br><span class="line">  &lt;groupId&gt;com.taosdata.jdbc&lt;/groupId&gt;  </span><br><span class="line">  &lt;artifactId&gt;taos-jdbcdriver&lt;/artifactId&gt;  </span><br><span class="line">  &lt;version&gt;2.0.42&lt;/version&gt;  </span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<ol start="2">
+<li>taos-jdbcdriver的依赖与spark集群可能存在冲突(版本不同)，需要手动指定依赖，方法为：<ol>
+<li>下载正确的依赖，我用的是guava-30.1.1-jre.jar和failureaccess-1.0.1.jar </li>
+<li>将jar上传hadoop；</li>
+<li>在提交spark任务的时候，手动制定依赖：</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--conf spark.driver.extraClassPath=guava-30.1.1-jre.jar:failureaccess-1.0.1.jar \</span><br><span class="line">--conf spark.executor.extraClassPath=guava-30.1.1-jre.jar:failureaccess-1.0.1.jar </span><br><span class="line">--jars hadoop-path-to-jar/guava-30.1.1-jre.jar,hadoop-path-to-jar/failureaccess-1.0.1.jar </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>对于pyspark程序，最好引用taos-jdbcdriver-2.0.42-dist.jar，补足依赖</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--conf spark.driver.extraClassPath=guava-30.1.1-jre.jar:failureaccess-1.0.1.jar:taos-jdbcdriver-2.0.42-dist.jar </span><br><span class="line">--conf spark.executor.extraClassPath=guava-30.1.1-jre.jar:failureaccess-1.0.1.jar:taos-jdbcdriver-2.0.42-dist.jar </span><br><span class="line">--jars hadoop-path-to-jar/guava-30.1.1-jre.jar,hadoop-path-to-jar/failureaccess-1.0.1.jar,hadoop-path-to-jar/taos-jdbcdriver-2.0.42-dist.jar</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-读取"><a href="#1-2-读取" class="headerlink" title="1.2 读取"></a>1.2 读取</h3><p>Spark通过TDBC读取TDengine数据和其他数据库并没有什么本质区别，可以通过以下方法来读取：</p>
+<ol>
+<li>读取整张表</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">info = spark.read\  </span><br><span class="line">    .<span class="built_in">format</span>(<span class="string">&quot;jdbc&quot;</span>)\  </span><br><span class="line">    .option(<span class="string">&quot;driver&quot;</span>, <span class="string">&quot;com.taosdata.jdbc.rs.RestfulDriver&quot;</span>)\  </span><br><span class="line">    .option(<span class="string">&quot;url&quot;</span>, <span class="string">&quot;jdbc:TAOS-RS://ip:port/db?user=user&amp;password=password&quot;</span>)\  </span><br><span class="line">    .option(<span class="string">&quot;dbtable&quot;</span>, <span class="string">&quot;test.test&quot;</span>)\  </span><br><span class="line">    .load() </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>读取部分内容</li>
+</ol>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">info = spark.read\  </span><br><span class="line">    .<span class="built_in">format</span>(<span class="string">&quot;jdbc&quot;</span>)\  </span><br><span class="line">    .option(<span class="string">&quot;driver&quot;</span>, <span class="string">&quot;com.taosdata.jdbc.rs.RestfulDriver&quot;</span>)\  </span><br><span class="line">    .option(<span class="string">&quot;url&quot;</span>, <span class="string">&quot;jdbc:TAOS-RS://ip:port/db?user=user&amp;password=password&quot;</span>)\  </span><br><span class="line">    .option(<span class="string">&quot;query&quot;</span>, <span class="string">&quot;select * from test.test&quot;</span>)\  </span><br><span class="line">    .load() </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果读取的数量较多，可能会遇到timeout错误，可以设置httpSocketTimeout，单位是ms，默认值为5000</p>
+</blockquote>
+<h3 id="1-3-存储"><a href="#1-3-存储" class="headerlink" title="1.3 存储"></a>1.3 存储</h3><p>可以使用下面的方法向TDengine保存数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">toHbaseSave</span><br><span class="line">  .write</span><br><span class="line">  .<span class="built_in">format</span>(<span class="string">&quot;jdbc&quot;</span>)</span><br><span class="line">  .option(<span class="string">&quot;url&quot;</span>, <span class="string">&quot;jdbc:TAOS-RS://ip:port/db?user=user&amp;password=password&quot;</span>)</span><br><span class="line">  .option(<span class="string">&quot;driver&quot;</span>, <span class="string">&quot;com.taosdata.jdbc.rs.RestfulDriver&quot;</span>)</span><br><span class="line">  .mode(SaveMode.Append)</span><br><span class="line">  .option(<span class="string">&quot;dbtable&quot;</span>, <span class="string">&quot;test.test&quot;</span>)</span><br><span class="line">  .save()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-使用自定义数据源写入数据"><a href="#2-使用自定义数据源写入数据" class="headerlink" title="2. 使用自定义数据源写入数据"></a>2. 使用自定义数据源写入数据</h2><p>对于spark来说，直接使用官方的jdbc进行连接只能实现向普通表中写入数据，无法利用TDengine超级表的特性，为了能向超级表中写入数据，需要自定义数据源。</p>
+<p>由于只需要写入特性，因此下面的内容中只实现了写入的逻辑，没有实现读取的逻辑，使用scala编写。</p>
+<ol>
+<li><p>继承DataSourceV2和WriteSupport 并重写createWriter方法，创建自定义的数据源；</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TDSourceV2</span> <span class="keyword">extends</span> <span class="title">DataSourceV2</span>  <span class="keyword">with</span> <span class="title">WriteSupport</span> <span class="keyword">with</span> <span class="title">Serializable</span> </span>&#123;  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">createWriter</span></span>(</span><br><span class="line">                             jobId: <span class="type">String</span>,  </span><br><span class="line">                             structType: <span class="type">StructType</span>,  </span><br><span class="line">                             saveMode: <span class="type">SaveMode</span>,  </span><br><span class="line">                             dataSourceOptions: <span class="type">DataSourceOptions</span>): <span class="type">Optional</span>[<span class="type">DataSourceWriter</span>] = &#123;  </span><br><span class="line">    <span class="type">Optional</span>.of(<span class="keyword">new</span> <span class="type">TDSourceWriter</span>(  </span><br><span class="line">	<span class="comment">// url</span></span><br><span class="line">      dataSourceOptions.get(<span class="string">&quot;url&quot;</span>).get(),</span><br><span class="line">    <span class="comment">// 用户名  </span></span><br><span class="line">      dataSourceOptions.get(<span class="string">&quot;user&quot;</span>).get(),  </span><br><span class="line">	<span class="comment">// 密码</span></span><br><span class="line">      dataSourceOptions.get(<span class="string">&quot;password&quot;</span>).get(),  </span><br><span class="line">	<span class="comment">// 数据库名称</span></span><br><span class="line">      dataSourceOptions.get(<span class="string">&quot;db&quot;</span>).get(),  </span><br><span class="line">	<span class="comment">// 超级表名称</span></span><br><span class="line">      dataSourceOptions.get(<span class="string">&quot;stable&quot;</span>).get()))  </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>继承 DataSourceWriter 重写 createWriterFactory 方法并返回自定义的 DataWriterFactory，重写 commit 方法，用来提交整个事务, 重写 abort 方法，用来做事务回滚；</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TDSourceWriter</span>(<span class="params">  </span></span></span><br><span class="line"><span class="params"><span class="class">                      url: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                      user: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                      password: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                      db: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                      stable: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">DataSourceWriter</span> <span class="keyword">with</span> <span class="title">Serializable</span></span>&#123;  </span><br><span class="line">                      </span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">createWriterFactory</span></span>(): <span class="type">DataWriterFactory</span>[<span class="type">InternalRow</span>] = &#123;  </span><br><span class="line">    <span class="keyword">new</span> <span class="type">TDWriterFactory</span>(url, user, password, db, stable)  </span><br><span class="line">  &#125;  </span><br><span class="line">  <span class="comment">// 2.6版本的TDengine不支持事务</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">commit</span></span>(writerCommitMessages: <span class="type">Array</span>[<span class="type">WriterCommitMessage</span>]): <span class="type">Unit</span> = <span class="type">Unit</span>  </span><br><span class="line">  <span class="comment">// 2.6版本的TDengine不支持事务</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">abort</span></span>(writerCommitMessages: <span class="type">Array</span>[<span class="type">WriterCommitMessage</span>]): <span class="type">Unit</span> = <span class="type">Unit</span>  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>继承 DataWriterFactory, 重写 createDataWriter方法返回自定义的 DataWriter；</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TDWriterFactory</span>(<span class="params">  </span></span></span><br><span class="line"><span class="params"><span class="class">                       url: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                       user: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                       password: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                       db: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                       stable: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">DataWriterFactory</span>[<span class="type">InternalRow</span>] <span class="keyword">with</span> <span class="title">Serializable</span> </span>&#123;  </span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">createDataWriter</span></span>(  </span><br><span class="line">                                 partitionId: <span class="type">Int</span>,  </span><br><span class="line">                                 taskId: <span class="type">Long</span>,  </span><br><span class="line">                                 epochId: <span class="type">Long</span>): <span class="type">DataWriter</span>[<span class="type">InternalRow</span>] = &#123;  </span><br><span class="line">    <span class="keyword">new</span> <span class="type">TDDataWriter</span>(url, user, password, db, stable)  </span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>继承 DataWriter 重写 write 方法实现具体的写入数据库逻辑，重写 commit 方法用来提交事务，重写 abort 方法用来做事务回滚 ；</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TDDataWriter</span>(<span class="params">  </span></span></span><br><span class="line"><span class="params"><span class="class">                    url: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                    user: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                    password: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                    db: <span class="type">String</span>,  </span></span></span><br><span class="line"><span class="params"><span class="class">                    stable: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">DataWriter</span>[<span class="type">InternalRow</span>] <span class="keyword">with</span> <span class="title">Serializable</span> </span>&#123;  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> logger = <span class="type">LoggerFactory</span>.getLogger(<span class="keyword">this</span>.getClass)  </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> conn: <span class="type">Connection</span> = <span class="literal">null</span>  </span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> stmt: <span class="type">Statement</span> = <span class="literal">null</span>  </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">write</span></span>(record: <span class="type">InternalRow</span>): <span class="type">Unit</span> = &#123;  </span><br><span class="line">  </span><br><span class="line">	<span class="comment">// 在这里编写将数据插入数据库的逻辑</span></span><br><span class="line">	</span><br><span class="line">    <span class="type">Class</span>.forName(<span class="string">&quot;com.taosdata.jdbc.rs.RestfulDriver&quot;</span>)  </span><br><span class="line">    <span class="keyword">val</span> jdbcUrl = <span class="string">s&quot;jdbc:TAOS-RS://<span class="subst">$url</span>/<span class="subst">$db</span>?user=<span class="subst">$user</span>&amp;password=<span class="subst">$password</span>&quot;</span>  </span><br><span class="line">    </span><br><span class="line">	<span class="comment">// 可以通过record.getxxx获取对应列的内容</span></span><br><span class="line">	<span class="comment">// 如table_name = record.getString(0) </span></span><br><span class="line">	</span><br><span class="line">    <span class="keyword">val</span> variable1 = record.getString(<span class="number">0</span>)  </span><br><span class="line">    <span class="keyword">val</span> variable2 = record.getInt(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">val</span> variable3 = record.getFloat(<span class="number">2</span>)</span><br><span class="line">        </span><br><span class="line">	<span class="comment">// 构建插入数据库的sql语句</span></span><br><span class="line">	<span class="comment">// 请注意，只有原生连接方式才支持参数绑定的插入方式，</span></span><br><span class="line">	<span class="comment">// 由于要在spark集群上跑，这里用的是Rest的连接方式，</span></span><br><span class="line">	<span class="comment">// 所以只能手动构建插入数据库的sql语句，</span></span><br><span class="line">	<span class="comment">// 关于原生连接、Rest连接和参数绑定插入，请见官方文档</span></span><br><span class="line">	</span><br><span class="line">    <span class="keyword">val</span> sql = <span class="string">&quot;insert to ...&quot;</span></span><br><span class="line">  </span><br><span class="line">    logger.info(sql)  </span><br><span class="line">  </span><br><span class="line">    conn = <span class="type">DriverManager</span>.getConnection(jdbcUrl)  </span><br><span class="line">    stmt = conn.createStatement()  </span><br><span class="line">    stmt.execute(<span class="string">s&quot;use <span class="subst">$db</span>&quot;</span>)  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">try</span>&#123;  </span><br><span class="line">      stmt.execute(sql)  </span><br><span class="line">      conn.commit()  </span><br><span class="line">    &#125;<span class="keyword">catch</span> &#123;  </span><br><span class="line">      <span class="keyword">case</span> e: <span class="type">Exception</span> =&gt; e.printStackTrace()  </span><br><span class="line">    &#125;<span class="keyword">finally</span> &#123;  </span><br><span class="line">      conn.close()  </span><br><span class="line">    &#125;  </span><br><span class="line">  &#125;  </span><br><span class="line"></span><br><span class="line">  <span class="comment">// Tdengine2.6版本不支持事务，因此此处并无实际需要做的事情</span></span><br><span class="line">  <span class="comment">// 创建WriterCommitMessage类，绝对不能传null，网上有些代码是错误的</span></span><br><span class="line">  <span class="class"><span class="keyword">object</span> <span class="title">WriteSucceeded</span> <span class="keyword">extends</span> <span class="title">WriterCommitMessage</span>  </span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">commit</span></span>(): <span class="type">WriterCommitMessage</span> = <span class="type">WriteSucceeded</span> </span><br><span class="line">   </span><br><span class="line">  <span class="comment">// Tdengine2.6版本不支持事务，因此此处并无实际需要做的事情</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">abort</span></span>(): <span class="type">Unit</span> = <span class="type">Unit</span>  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调用，在程序中指定自定义的datasource并传入参数</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">toTdSave  </span><br><span class="line">  .write  </span><br><span class="line">  .format(<span class="string">&quot;org.example.TDSourceV2&quot;</span>)  </span><br><span class="line">  .mode(<span class="type">SaveMode</span>.<span class="type">Append</span>)  </span><br><span class="line">  <span class="comment">// url</span></span><br><span class="line">  .option(<span class="string">&quot;url&quot;</span>, url)  </span><br><span class="line">  <span class="comment">// 数据库名</span></span><br><span class="line">  .option(<span class="string">&quot;db&quot;</span>, db)  </span><br><span class="line">  <span class="comment">// 用户名</span></span><br><span class="line">  .option(<span class="string">&quot;user&quot;</span>, user)  </span><br><span class="line">  <span class="comment">// 超级表名</span></span><br><span class="line">  .option(<span class="string">&quot;stable&quot;</span>, stable)  </span><br><span class="line">  <span class="comment">// 密码</span></span><br><span class="line">  .option(<span class="string">&quot;password&quot;</span>, password)  </span><br><span class="line">  .save()</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>参考文献：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.modb.pro/db/132365">暑期2021项目经验分享：实现Spark对接openGauss</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/penriver/article/details/115672072">Spark DataSource V1 &amp; V2 API 一文理解</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jsledd.cn/2019/04/05/datasourcev2/">Spark SQL DataSource V2 学习入门 + 代码模板</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.taosdata.com/2.6/reference/connector/java/">Tdengine v2.6 官方文档</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/TDengine/" rel="tag"># TDengine</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/20/Python%E6%97%B6%E9%97%B4%E6%A0%BC%E5%BC%8F%E6%80%BB%E7%BB%93/" rel="prev" title="Python时间格式总结">
+                  <i class="fa fa-angle-left"></i> Python时间格式总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/28/Pytorch%E4%B8%ADGRU%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%85%B3%E9%94%AE%E5%8F%82%E6%95%B0%E5%8F%8A%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E7%BB%B4%E5%BA%A6/" rel="next" title="Pytorch中GRU模型的关键参数及输入输出维度">
+                  Pytorch中GRU模型的关键参数及输入输出维度 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">lzybetter</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

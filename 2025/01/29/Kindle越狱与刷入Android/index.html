@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.4.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.lzyutopia.tk","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近换了工作，由于通勤时间比较长，所以又把吃灰了很久的Kindle翻了出来，刷上了安卓并安装了微信读书，在通勤路上看看书，效果很不错，所以记录一下刷机的过程，也算是一个备份； 所有的操作内容都搜集自网络，尤其是书伴网和XDA论坛，感谢CrackDroid系统的开发大神Ygjsz以及提供越狱和其他教程的各位大佬们。 越狱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kindle越狱与刷入Android">
+<meta property="og:url" content="https://blog.lzyutopia.tk/2025/01/29/Kindle%E8%B6%8A%E7%8B%B1%E4%B8%8E%E5%88%B7%E5%85%A5Android/index.html">
+<meta property="og:site_name" content="我的田地">
+<meta property="og:description" content="最近换了工作，由于通勤时间比较长，所以又把吃灰了很久的Kindle翻了出来，刷上了安卓并安装了微信读书，在通勤路上看看书，效果很不错，所以记录一下刷机的过程，也算是一个备份； 所有的操作内容都搜集自网络，尤其是书伴网和XDA论坛，感谢CrackDroid系统的开发大神Ygjsz以及提供越狱和其他教程的各位大佬们。 越狱">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292055816.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292054293.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501291908756.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292057794.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292057693.png">
+<meta property="og:image" content="https://bookfere.com/wp-content/uploads/2025/01/kindle-winter-break-completed.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292235965.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292237155.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292256360.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292257895.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292301620.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292306570.jpg">
+<meta property="article:published_time" content="2025-01-29T15:30:00.000Z">
+<meta property="article:modified_time" content="2025-01-29T15:39:42.507Z">
+<meta property="article:author" content="lzybetter">
+<meta property="article:tag" content="Kindle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292055816.png">
+
+
+<link rel="canonical" href="https://blog.lzyutopia.tk/2025/01/29/Kindle%E8%B6%8A%E7%8B%B1%E4%B8%8E%E5%88%B7%E5%85%A5Android/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://blog.lzyutopia.tk/2025/01/29/Kindle%E8%B6%8A%E7%8B%B1%E4%B8%8E%E5%88%B7%E5%85%A5Android/","path":"2025/01/29/Kindle越狱与刷入Android/","title":"Kindle越狱与刷入Android"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Kindle越狱与刷入Android | 我的田地</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">我的田地</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B6%8A%E7%8B%B1"><span class="nav-number">1.</span> <span class="nav-text">越狱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E8%A1%A5%E4%B8%81"><span class="nav-number">2.</span> <span class="nav-text">安装补丁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B7%E5%85%A5Android"><span class="nav-number">4.</span> <span class="nav-text">刷入Android</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%BE%AE%E4%BF%A1%E8%AF%BB%E4%B9%A6"><span class="nav-number">5.</span> <span class="nav-text">安装微信读书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.1.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">lzybetter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://blog.lzyutopia.tk/2025/01/29/Kindle%E8%B6%8A%E7%8B%B1%E4%B8%8E%E5%88%B7%E5%85%A5Android/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="lzybetter">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="我的田地">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Kindle越狱与刷入Android | 我的田地">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kindle越狱与刷入Android
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-01-29 23:30:00 / Modified: 23:39:42" itemprop="dateCreated datePublished" datetime="2025-01-29T23:30:00+08:00">2025-01-29</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近换了工作，由于通勤时间比较长，所以又把吃灰了很久的Kindle翻了出来，刷上了安卓并安装了微信读书，在通勤路上看看书，效果很不错，所以记录一下刷机的过程，也算是一个备份；</p>
+<p>所有的操作内容都搜集自网络，尤其是书伴网和XDA论坛，感谢CrackDroid系统的开发大神Ygjsz以及提供越狱和其他教程的各位大佬们。</p>
+<h2 id="越狱"><a href="#越狱" class="headerlink" title="越狱"></a>越狱</h2><span id="more"></span>
+
+<p>使用<strong>WinterBreak</strong>越狱，前提是将kindle切换到美区，要能看到购物车图标：<br>    <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292055816.png" alt="image.png"></p>
+<ol>
+<li><p>下载WinterBreadk，<a target="_blank" rel="noopener" href="https://github.com/KindleModding/WinterBreak/releases/latest">官网链接</a></p>
+</li>
+<li><p>将文件解压，注意其中的隐藏文件夹**.active_content_sandbox**，后续复制的时候一定要复制进去，解压后文件结构如下：<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292054293.png" alt="image.png"></p>
+</li>
+<li><p>开启Kindle的飞行模式</p>
+<p> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501291908756.png" alt="image.png"></p>
+</li>
+<li><p>将kindle连接至电脑并将之前解压的文件放到kindle根目录下；</p>
+</li>
+<li><p>弹出 Kindle 磁盘并<strong>拔掉 USB 数据线</strong>；</p>
+</li>
+<li><p>重启 Kindle 设备；</p>
+</li>
+<li><p>进入 Kindle 后点击商店图标;</p>
+</li>
+<li><p>这时会出现如下图所示的提示框，选择“好的”：<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292057794.png" alt="image.png"></p>
+</li>
+<li><p>正常情况下会看到如下图所示页面<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292057693.png" alt="image.png"></p>
+</li>
+<li><p>点击 WinterBreak 图片出现如下界面：<br><img src="https://bookfere.com/wp-content/uploads/2025/01/kindle-winter-break-completed.png" alt="Kindle中WinterBreak完成越狱"></p>
+</li>
+<li><p>越狱完毕;</p>
+</li>
+</ol>
+<h2 id="安装补丁"><a href="#安装补丁" class="headerlink" title="安装补丁"></a>安装补丁</h2><p>安装热修复补丁(<strong>Hotfix</strong>)可以防止越狱在更新固件后失效，步骤如下：</p>
+<ol>
+<li>下载Hotfix，<a target="_blank" rel="noopener" href="https://github.com/KindleModding/Hotfix/releases/latest/download/Update_hotfix_universal.bin">官方地址</a></li>
+<li>用 USB 数据线将你的 Kindle 连接到电脑；</li>
+<li>将下载到的 .bin 文件拷贝到 Kindle 根目录；</li>
+<li>弹出 Kindle 磁盘并断开 USB 数据线连接；</li>
+<li>前往【设置 → 更新您的 Kindle】安装补丁；</li>
+<li>等待 Kindle 自动重新启动；</li>
+<li>进入 Kindle 后点击名为“Run Hotfix”的电子书。</li>
+</ol>
+<p>以上完成后，越狱就算成功了，可以删除拷贝到kindle的文件，尤其需要删除.active_content_sandbox，否则可能无法正常访问商店；</p>
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>为安装android系统，需要安装MRPI和KUAL两款插件，其中MRPI需选择支持HF 的版本</p>
+<ol>
+<li>MRPI安装：<ol>
+<li><p>下载 MRPI（支持HF版本），<a target="_blank" rel="noopener" href="https://fw.notmarek.com/khf/#:~:text=MRPI%20%2D%20modified%20to%20support%20HF">官方链接</a><br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292235965.png" alt="image.png"></p>
+</li>
+<li><p>将下载得到的文件解压；</p>
+</li>
+<li><p>把文件夹内的 <strong>extensions</strong> 和 <strong>mrpackages</strong> 拷贝到 Kindle 的根目录；</p>
+</li>
+<li><p>在搜索栏中输入;log mrpi 点击回车</p>
+</li>
+</ol>
+</li>
+<li>KUAL安装：<ol>
+<li>下载KUAL，<a target="_blank" rel="noopener" href="http://www.mobileread.com/forums/showthread.php?t=225030">官方链接</a><br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292237155.png" alt="image.png"></li>
+<li>将下载到的文件解压缩；</li>
+<li>在解压的文件夹中找到 Update_KUALBooklet_v2.x.xx_install.bin 文件，拷贝到 Kindle 根目录下的 mrpackages 文件夹；</li>
+<li>在搜索栏中输入;log mrpi 点击回车；</li>
+<li>这时会调用 mrpi 安装 KUAL，安装完成并等待 Kindle 重启完毕后即可使用 KUAL。</li>
+</ol>
+</li>
+</ol>
+<h2 id="刷入Android"><a href="#刷入Android" class="headerlink" title="刷入Android"></a>刷入Android</h2><ol>
+<li>安装fastboot驱动，<a target="_blank" rel="noopener" href="https://xdaforums.com/attachments/adb-setup-1-4-3-zip.5759975/">驱动链接</a>；</li>
+<li>下载对应kindle版本的文件，<a target="_blank" rel="noopener" href="https://xdaforums.com/t/guide-installing-android-on-your-aging-kindle-e-reader.4450117/">文件链接</a>，下面以paperwhite3为例， 下载文件名：kpw3.220810.zip；</li>
+<li>将下载到的文件解压，得到两个文件夹，kpw3和uboot；</li>
+<li>将uboot文件夹里的<strong>main-htmlviewer.tar.gz</strong>拷贝到Kindle根目录，<strong>该文件不要解压</strong>！</li>
+<li>将uboot文件夹中的extensions.zip解压，并将解压后的内容拷贝到Kindle的extensions文件夹中；<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292256360.png" alt="image.png"></li>
+<li>打开KUAL，可以看到FlashAndroid选项，点击(请注意，<strong>保证Kindle的电量足够</strong>)；<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292257895.png" alt="image.png"></li>
+<li>点击FlashAndroid后，kindle会重启，其启动进度条可能会卡主，这是正常的，此时电脑应该会发出U盘不断插入拔出的声音；</li>
+<li>运行kpw3文件夹中的Start.exe文件，在选项表中选择8；<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292301620.png" alt="image.png"></li>
+<li>等待刷写完成，kindle可能会自动重启，如果没有需要手动重启，重启完成后kindle应进入android系统；<br> <img src="https://raw.githubusercontent.com/lzybetter/my_pic_bed/main/202501292306570.jpg" alt="Snipaste_2025-01-29_23-05-48.jpg"></li>
+</ol>
+<h2 id="安装微信读书"><a href="#安装微信读书" class="headerlink" title="安装微信读书"></a>安装微信读书</h2><ol>
+<li>下载1.5.2版本的微信读书墨水瓶版， <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/17sIg8wejIvne-hW2uVwOPA">百度网盘链接(搜集自网络，安全性自行评估)</a>，提取码496m；</li>
+<li>将apk文件拷贝到kindle，并安装；</li>
+</ol>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
+<li>书伴：<a target="_blank" rel="noopener" href="https://bookfere.com/post/1145.html">2025 Kindle 越狱教程：不限 Kindle 型号，不限固件版本</a></li>
+<li>书伴：<a target="_blank" rel="noopener" href="https://bookfere.com/post/311.html">Kindle 越狱插件资源下载及详细安装步骤</a></li>
+<li>CSDN：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_33441128/article/details/143233642">kindle刷安卓系统，安装微信读书</a></li>
+<li>XDA论坛：<a target="_blank" rel="noopener" href="https://xdaforums.com/t/guide-installing-android-on-your-aging-kindle-e-reader.4450117/">(guide)Installing android on your (aging) kindle e-reader</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kindle/" rel="tag"># Kindle</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/03/11/Ubuntu%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85Python/" rel="prev" title="Ubuntu下编译安装Python">
+                  <i class="fa fa-angle-left"></i> Ubuntu下编译安装Python
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">lzybetter</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
